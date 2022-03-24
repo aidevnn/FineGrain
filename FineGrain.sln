@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FineGrain", "FineGrain\FineGrain.csproj", "{6B167159-6F19-49C3-A2A7-7EE44DB18E5D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B167159-6F19-49C3-A2A7-7EE44DB18E5D}.Debug|x86.ActiveCfg = Debug|x86
+		{6B167159-6F19-49C3-A2A7-7EE44DB18E5D}.Debug|x86.Build.0 = Debug|x86
+		{6B167159-6F19-49C3-A2A7-7EE44DB18E5D}.Release|x86.ActiveCfg = Release|x86
+		{6B167159-6F19-49C3-A2A7-7EE44DB18E5D}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+EndGlobal
