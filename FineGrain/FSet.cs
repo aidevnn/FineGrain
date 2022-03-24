@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace FineGrain
 {
-    public abstract class AObj
+    public abstract class AObj : IEquatable<AObj>
     {
         public int HashCode { get; }
         protected AObj(int[] arr)
@@ -16,6 +16,8 @@ namespace FineGrain
         {
             HashCode = hash;
         }
+
+        public bool Equals(AObj other) => HashCode == other.HashCode;
     }
 
     public abstract class FSet<T> : AObj where T : struct

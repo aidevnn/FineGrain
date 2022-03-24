@@ -30,39 +30,39 @@ namespace FineGrain
             return hash;
         }
 
-        public static int GenHash(int[] n, int[] m)
+        public static int GenHash<T>(int[] n, T[] m)
         {
             var pow = 1;
             var hash = 0;
             for (int k = 0; k < m.Length; ++k)
             {
-                hash += pow * m[k];
+                hash += pow * m[k].GetHashCode();
                 pow *= n[k];
             }
 
             return hash;
         }
 
-        public static int GenHash(int[] n, int m)
+        public static int GenHash<T>(int[] n, T m)
         {
             var pow = 1;
             var hash = 0;
             for (int k = 0; k < n.Length; ++k)
             {
-                hash += pow * m;
+                hash += pow * m.GetHashCode();
                 pow *= n[k];
             }
 
             return hash;
         }
 
-        public static int GenHash(int n, int[] m)
+        public static int GenHash<T>(int n, T[] m)
         {
             var pow = 1;
             var hash = 0;
             for (int k = 0; k < m.Length; ++k)
             {
-                hash += pow * m[k];
+                hash += pow * m[k].GetHashCode();
                 pow *= n;
             }
 

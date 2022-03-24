@@ -43,6 +43,12 @@
     <Compile Include="FGroup.cs" />
     <Compile Include="SubGroup.cs" />
     <Compile Include="QuotientGroup.cs" />
+    <Compile Include="Integer256.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Link>README.md</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -62,7 +62,7 @@ namespace FineGrain
             }
 
             var gr = $"|G|={G.Elements.Count} and |H|={H.Elements.Count}";
-            Fmt = "|G:H| = {0}, " + gr;
+            Fmt = "|G/H| = {0}, " + gr;
             FmtElt = "({1})[{0}]";
             CreateCaches(FGroup.CacheLength);
             CreateIdentity(FGroup.Identity);
@@ -112,6 +112,7 @@ namespace FineGrain
             return re;
         }
 
+        public GroupSubSet<T, U> SubGroup => G_over_H;
         public void Details() => G_over_H.Details();
 
         protected override U Create(params T[] ts) => Identity;

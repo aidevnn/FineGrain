@@ -12,13 +12,16 @@ namespace FineGrain
             FGroup = fGroup;
         }
 
-        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us) : base(fGroup)
+        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us, string fmt = "") : base(fGroup)
         {
             if (us.Any(e => !FSet.HashCode.Equals(e.FSet.HashCode)))
                 return;
 
             FGroup = fGroup;
             AddRange(us, true);
+
+            if (!string.IsNullOrEmpty(fmt))
+                Fmt = fmt;
         }
 
         public bool IsGroup()
@@ -87,20 +90,20 @@ namespace FineGrain
                 return;
             }
 
-            if (Elements.Count > 50)
+            if (elements.Count > 50)
             {
                 Console.WriteLine("TOO BIG");
                 return;
             }
 
-            var word = GenLetters(Elements.Count, !isGr).Select(w => w[0]).ToList();
+            var word = GenLetters(elements.Count, !isGr).Select(w => w[0]).ToList();
             Dictionary<char, U> ce = new Dictionary<char, U>();
             Dictionary<U, char> ec = new Dictionary<U, char>(new ObjEquality<U>());
 
-            for (int k = 0; k < Elements.Count; ++k)
+            for (int k = 0; k < elements.Count; ++k)
             {
                 var c = word[k];
-                var e = Elements.ElementAt(k);
+                var e = elements.ElementAt(k);
                 ce[c] = e;
                 ec[e] = c;
             }
@@ -112,10 +115,10 @@ namespace FineGrain
             Console.WriteLine(head);
             Console.WriteLine(line);
 
-            foreach (var e0 in Elements)
+            foreach (var e0 in elements)
             {
                 var v0 = ec[e0].ToString();
-                var l0 = Elements.Select(e1 => ec[FGroup.Op(e1, e0)]).ToList();
+                var l0 = elements.Select(e1 => ec[FGroup.Op(e1, e0)]).ToList();
                 Console.WriteLine(MyFormat(v0, " ", l0));
             }
 
@@ -149,7 +152,7 @@ namespace FineGrain
 
     public class Monogenic<T, U> : GroupSubSet<T, U> where U : GElt<T>, IComparable<GElt<T>> where T : struct, IComparable<T>, IEquatable<T>
     {
-        public Monogenic(FGroup<T, U> fGroup, U e) : base(fGroup)
+        public Monogenic(FGroup<T, U> fGroup, U e, string fmt = "") : base(fGroup)
         {
             if (!e.FSet.Equals(fGroup))
                 return;
@@ -162,6 +165,9 @@ namespace FineGrain
             }
 
             AddRange(elts);
+
+            if (!string.IsNullOrEmpty(fmt))
+                Fmt = fmt;
         }
     }
 }

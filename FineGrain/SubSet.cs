@@ -20,17 +20,20 @@ namespace FineGrain
         public List<U> Elements => elements.ToList();
         public bool Contains(U e) => elements.Contains(e);
         public int Count => elements.Count;
+        public string Fmt { get; protected set; }
 
         protected SubFSet(FSet<T> fSet)
         {
             FSet = fSet;
             elements = new SortedSet<U>();
+            Fmt = fSet.Fmt;
         }
 
         protected SubFSet(U elt)
         {
             FSet = elt.FSet;
             elements = new SortedSet<U>() { elt };
+            Fmt = FSet.Fmt;
         }
 
         protected void Add(U e) => elements.Add(e);
@@ -49,10 +52,10 @@ namespace FineGrain
 
         public virtual void DisplayHead()
         {
-            Console.WriteLine(FSet.Fmt, Elements.Count);
+            Console.WriteLine(Fmt, Elements.Count);
         }
 
-        public virtual void DisplayElements(bool skipFirst = false)
+        public virtual void DisplayElements(bool skipFirst = false, bool format = true)
         {
             if (elements.Count == 0)
             {
@@ -62,15 +65,20 @@ namespace FineGrain
 
             DisplayHead();
 
-            if (Elements.Count > 200)
+            if (elements.Count > 200)
             {
                 Console.WriteLine("TOO BIG");
                 return;
             }
 
-            var word = GenLetters(Elements.Count, skipFirst);
-            for (int k = 0; k < Elements.Count; ++k)
-                Elements.ElementAt(k).Display(word[k]);
+            var word = GenLetters(elements.Count, skipFirst);
+            for (int k = 0; k < elements.Count; ++k)
+            {
+                if (format)
+                    Elements.ElementAt(k).Display(word[k]);
+                else
+                    Console.WriteLine("\t{0}", elements.ElementAt(k));
+            }
 
             Console.WriteLine();
         }
