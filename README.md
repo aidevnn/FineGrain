@@ -80,7 +80,7 @@ Class of : (  4)[  5]
     ( 19)[ 20]
 ```
 
-### More complex, S4, the group of permutation
+### More complex, S4, the group of permutations
 
 ```
 var sn = new Sigma(4);
