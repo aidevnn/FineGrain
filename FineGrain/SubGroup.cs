@@ -10,10 +10,12 @@ namespace FineGrain
         public GroupSubSet(FGroup<T, U> fGroup) : base(fGroup)
         {
             FGroup = fGroup;
+            elements = new SortedSet<U>(new GEltComparer<T, U>());
         }
 
         public GroupSubSet(FGroup<T, U> fGroup, string name) : base(fGroup)
         {
+            FGroup = fGroup;
             Name = name;
         }
 
@@ -28,6 +30,7 @@ namespace FineGrain
                 return;
 
             FGroup = fGroup;
+            elements = new SortedSet<U>(new GEltComparer<T, U>());
             AddRange(us, true);
         }
 
@@ -99,6 +102,9 @@ namespace FineGrain
                 Console.WriteLine("Empty Set");
                 return;
             }
+
+            var elts = Elements;
+            elements = new SortedSet<U>(elts, new GEltComparer<T, U>());
 
             var isGr = IsGroup();
             base.DisplayHead();

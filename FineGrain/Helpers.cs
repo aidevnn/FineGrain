@@ -14,7 +14,7 @@ namespace FineGrain
 
         }
 
-        public static int[] SnIdentity(int n) => Enumerable.Range(0, n + 1).ToArray();
+        public static byte[] SnIdentity(int n) => Enumerable.Range(0, n).Select(a => (byte)a).ToArray();
         public static int SnIdHash(int n) => GenHash(n, SnIdentity(n));
 
         public static int GenHash(int[] dims)
@@ -71,9 +71,9 @@ namespace FineGrain
 
         public static bool IsZero(int[] a) => a.All(e => e == 0);
 
-        public static bool IsIdentity(int[] arr)
+        public static bool IsIdentity(byte[] arr)
         {
-            for (int k = 0; k < arr.Length; ++k)
+            for (byte k = 0; k < arr.Length; ++k)
             {
                 if (k != arr[k])
                     return false;
@@ -82,13 +82,13 @@ namespace FineGrain
             return true;
         }
 
-        public static void ComposePermutation(int[] arr0, int[] arr1, int[] arr2)
+        public static void ComposePermutation(byte[] arr0, byte[] arr1, byte[] arr2)
         {
-            for (int k = 0; k < arr2.Length; ++k)
+            for (byte k = 0; k < arr2.Length; ++k)
                 arr2[k] = arr0[arr1[k]];
         }
 
-        public static bool CheckArray(int n, int[] cycle)
+        public static bool CheckArray(int n, byte[] cycle)
         {
             if (cycle.Min() < 1 || cycle.Max() > n)
                 return false;
@@ -99,7 +99,7 @@ namespace FineGrain
             return true;
         }
 
-        public static void ComposeCycle(int[] arr0, int[] cycle)
+        public static void ComposeCycle(byte[] arr0, byte[] cycle)
         {
             var c = arr0[cycle[0]];
             for (int k = 0; k < cycle.Length - 1; ++k)
@@ -132,7 +132,7 @@ namespace FineGrain
         //    return all.Select(a => a.ToArray()).ToArray();
         //}
 
-        public static int ComputeOrder(int[] arr0, int[] arr1, int[] arr2)
+        public static int ComputeOrder(byte[] arr0, byte[] arr1, byte[] arr2)
         {
             int order = 0;
             while (true)
@@ -148,7 +148,7 @@ namespace FineGrain
             return order;
         }
 
-        public static int ComputeSign(int[] arr)
+        public static int ComputeSgn(byte[] arr)
         {
             int sgn = 1;
             for (int i = 1; i < arr.Length - 1; ++i)
@@ -159,7 +159,7 @@ namespace FineGrain
             return sgn;
         }
 
-        public static bool Convexity(int[] arr)
+        public static bool Convexity(byte[] arr)
         {
             bool next = true, prev = true;
             int n = arr.Length - 1;
@@ -175,21 +175,21 @@ namespace FineGrain
             return next || prev;
         }
 
-        public static void AddMod(int[] n, int[] m0, int[] m1, int[] m2)
+        public static void AddMod(byte[] n, byte[] m0, byte[] m1, byte[] m2)
         {
             for (int k = 0; k < m0.Length; ++k)
-                m2[k] = (m0[k] + m1[k]) % n[k];
+                m2[k] = (byte)((m0[k] + m1[k]) % n[k]);
         }
 
-        public static int[][] AllPermutation(int order, bool addZero = true)
+        public static byte[][] AllPermutation(int order, bool addZero = true)
         {
-            var pool = Enumerable.Range(1, order).ToList();
-            var acc = new List<List<int>>() { new List<int>() };
-            var tmpPool = new Queue<int>(pool);
+            var pool = Enumerable.Range(1, order).Select(a => (byte)a).ToList();
+            var acc = new List<List<byte>>() { new List<byte>() };
+            var tmpPool = new Queue<byte>(pool);
             while (tmpPool.Count != 0)
             {
                 var p = tmpPool.Dequeue();
-                var tmpAcc = new List<List<int>>();
+                var tmpAcc = new List<List<byte>>();
                 foreach (var l0 in acc)
                 {
                     for (int k = 0; k <= l0.Count; ++k)
@@ -212,22 +212,22 @@ namespace FineGrain
             return acc.Select(a => a.ToArray()).ToArray();
         }
 
-        public static int[] Canonic(int dim, int rank)
+        public static byte[] Canonic(int dim, int rank)
         {
-            int[] table = new int[dim];
+            byte[] table = new byte[dim];
             table[rank] = 1;
             return table;
         }
 
-        public static int[][] AllTuples(params int[] dims)
+        public static byte[][] AllTuples(params int[] dims)
         {
-            var acc = new List<List<int>>() { new List<int>() };
+            var acc = new List<List<byte>>() { new List<byte>() };
             for (int i = 0; i < dims.Length; ++i)
             {
-                var tmpAcc = new List<List<int>>();
+                var tmpAcc = new List<List<byte>>();
                 foreach (var l0 in acc)
                 {
-                    for (int k = 0; k < dims[i]; ++k)
+                    for (byte k = 0; k < dims[i]; ++k)
                     {
                         var l1 = l0.ToList();
                         l1.Add(k);

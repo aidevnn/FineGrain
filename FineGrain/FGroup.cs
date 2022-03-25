@@ -6,7 +6,7 @@ namespace FineGrain
 {
     public abstract class GElt<T> : Elt<T>, IComparable<GElt<T>> where T : struct, IEquatable<T>, IComparable<T>
     {
-        protected GElt(FSet<T> fSet, int hash) : base(fSet, hash) { }
+        protected GElt(FSet<T> fSet, int hash) : base(fSet, hash) { table = new T[fSet.CacheLength]; }
 
         protected GElt(FSet<T> fSet, GElt<T> e) : base(fSet, e.HashCode)
         {

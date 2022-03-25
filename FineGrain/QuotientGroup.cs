@@ -17,13 +17,20 @@ namespace FineGrain
 
         public override void DisplayHead()
         {
-            Console.WriteLine("Class of : {0} Modulo H", Representant);
+            Console.WriteLine("Class of : {0}", Representant);
         }
 
         public void DisplayEquivalents()
         {
             foreach (var e in elements)
                 Console.WriteLine("\t{0}", e);
+        }
+
+        public void Display()
+        {
+            DisplayHead();
+            Console.WriteLine("    Represent");
+            DisplayEquivalents();
         }
     }
 
@@ -40,6 +47,7 @@ namespace FineGrain
         readonly Dictionary<U, ClassModulo<T, U>> classOf = new Dictionary<U, ClassModulo<T, U>>();
         readonly Dictionary<int, int> representatives = new Dictionary<int, int>();
         string Name { get; }
+        public Dictionary<U, ClassModulo<T, U>> ClassOf => new Dictionary<U, ClassModulo<T, U>>(classOf);
         public GroupQuotient(FGroup<T, U> fGroup) : base(fGroup.HashCode)
         {
             FGroup = fGroup;
@@ -137,6 +145,22 @@ namespace FineGrain
             }
 
             G_over_H = new GroupSubSet<T, U>(this, Elements(), Name);
+
+            var allClasses = new Dictionary<int, List<int>>();
+            foreach(var e in representatives)
+            {
+                if (!allClasses.ContainsKey(e.Value))
+                    allClasses[e.Value] = new List<int>();
+
+                allClasses[e.Value].Add(e.Key);
+            }
+
+            foreach (var kp in allClasses)
+            {
+                var r = FGroup.GetElement<U>(kp.Key);
+                var subG = new GroupSubSet<T, U>(FGroup, kp.Value.Select(e => FGroup.GetElement<U>(e)).ToArray());
+                classOf[r] = new ClassModulo<T, U>(r, subG);
+            }
         }
 
         protected override U DefineOp(U a, U b)

@@ -7,13 +7,6 @@ namespace FineGrain
     public class Integer256 : GElt<byte>
     {
         public Group256 Group { get; }
-        public Integer256(Group256 group) : base(group, 0)
-        {
-            Group = group;
-            table = new byte[1];
-            V = 0;
-        }
-
         public Integer256(FSet<byte> fSet, Integer256 integer) : base(fSet, integer) { }
 
         public Integer256(Group256 group, byte v) : base(group, (v % group.N))
@@ -40,12 +33,14 @@ namespace FineGrain
             SetIdentity();
         }
 
-        public override Integer256 Clone(FSet<byte> fSet, Integer256 e) => new Integer256(fSet, e);
+        protected override Integer256 CreateIdentity() => Create(0);
 
         protected override Integer256 Create(params byte[] ts) => new Integer256(this, ts[0]);
 
-        protected override Integer256 CreateIdentity() => new Integer256(this);
+        public override Integer256 Clone(FSet<byte> fSet, Integer256 e) => new Integer256(fSet, e);
 
-        protected override Integer256 DefineOp(Integer256 a, Integer256 b) => new Integer256(this, (byte)(a.V + b.V));
+        protected override Integer256 DefineOp(Integer256 a, Integer256 b) => new Integer256(this, (byte)(((int)a.V + (int)b.V) % N));
+
+        public void GenerateAll() => CreateElement(1);
     }
 }
