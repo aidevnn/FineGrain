@@ -14,11 +14,14 @@ namespace FineGrain
             V = 0;
         }
 
-        public Integer256(Group256 group, byte v) : base(group, v)
+        public Integer256(FSet<byte> fSet, Integer256 integer) : base(fSet, integer) { }
+
+        public Integer256(Group256 group, byte v) : base(group, (v % group.N))
         {
             Group = group;
-            table = new byte[] { v };
-            V = v;
+            byte v0 = (byte)HashCode;
+            table = new byte[] { v0 };
+            V = v0;
         }
 
         public byte V { get; }
@@ -30,24 +33,19 @@ namespace FineGrain
 
     public class Group256 : FGroup<byte, Integer256>
     {
-        public Group256() : base(257)
+        public int N { get; }
+        public Group256(byte n = 128) : base(257)
         {
-            Fmt = "|G| = {0} in Z256";
-            FmtElt = "({0})[{1}]";
-
-            CreateCaches(1);
-            CreateIdentity(new Integer256(this, 0));
-            CreateElement(1);
+            N = n;
+            SetIdentity();
         }
 
-        protected override Integer256 Create(params byte[] ts)
-        {
-            return new Integer256(this, ts[0]);
-        }
+        public override Integer256 Clone(FSet<byte> fSet, Integer256 e) => new Integer256(fSet, e);
 
-        protected override Integer256 DefineOp(Integer256 a, Integer256 b)
-        {
-            return new Integer256(this, (byte)(a.V + b.V));
-        }
+        protected override Integer256 Create(params byte[] ts) => new Integer256(this, ts[0]);
+
+        protected override Integer256 CreateIdentity() => new Integer256(this);
+
+        protected override Integer256 DefineOp(Integer256 a, Integer256 b) => new Integer256(this, (byte)(a.V + b.V));
     }
 }

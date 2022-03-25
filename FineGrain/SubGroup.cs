@@ -12,16 +12,33 @@ namespace FineGrain
             FGroup = fGroup;
         }
 
-        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us, string fmt = "") : base(fGroup)
+        public GroupSubSet(FGroup<T, U> fGroup, string name) : base(fGroup)
+        {
+            Name = name;
+        }
+
+        public GroupSubSet(FGroup<T, U> fGroup, string name, string fmt) : this(fGroup, name)
+        {
+            Fmt = fmt;
+        }
+
+        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us) : base(fGroup)
         {
             if (us.Any(e => !FSet.HashCode.Equals(e.FSet.HashCode)))
                 return;
 
             FGroup = fGroup;
             AddRange(us, true);
+        }
 
-            if (!string.IsNullOrEmpty(fmt))
-                Fmt = fmt;
+        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us, string name) : this(fGroup, us)
+        {
+            Name = name;
+        }
+
+        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us, string name, string fmt) : this(fGroup, us, name)
+        {
+            Fmt = fmt;
         }
 
         public bool IsGroup()
@@ -70,9 +87,10 @@ namespace FineGrain
             var isGr = IsGroup();
             Console.WriteLine("IsGroup      :{0,5}", isGr);
             Console.WriteLine("IsCommutative:{0,5}", IsCommutative());
+            Console.WriteLine();
         }
 
-        public void DisplayElements() => base.DisplayElements(!IsGroup());
+        public void DisplayElements() => base.DisplayElements(!IsGroup()); 
 
         public void Table()
         {
@@ -148,11 +166,31 @@ namespace FineGrain
             AddRange(subSet.Elements.Select(e0 => FGroup.Op(e, e0)));
             OpLR = GroupOpLR.Left;
         }
+
+        public GroupOp(GroupSubSet<T, U> subSet, U e, string name) : this(subSet, e)
+        {
+            Name = name;
+        }
+
+        public GroupOp(GroupSubSet<T, U> subSet, U e, string name, string fmt) : this(subSet, e, name)
+        {
+            Fmt = fmt;
+        }
+
+        public GroupOp(U e, GroupSubSet<T, U> subSet,string name) : this(e, subSet)
+        {
+            Name = name;
+        }
+
+        public GroupOp(U e, GroupSubSet<T, U> subSet, string name, string fmt) : this(e, subSet, name)
+        {
+            Fmt = fmt;
+        }
     }
 
     public class Monogenic<T, U> : GroupSubSet<T, U> where U : GElt<T>, IComparable<GElt<T>> where T : struct, IComparable<T>, IEquatable<T>
     {
-        public Monogenic(FGroup<T, U> fGroup, U e, string fmt = "") : base(fGroup)
+        public Monogenic(FGroup<T, U> fGroup, U e) : base(fGroup)
         {
             if (!e.FSet.Equals(fGroup))
                 return;
@@ -165,9 +203,17 @@ namespace FineGrain
             }
 
             AddRange(elts);
+        }
 
-            if (!string.IsNullOrEmpty(fmt))
-                Fmt = fmt;
+        public Monogenic(FGroup<T, U> fGroup, U e, string name) : this(fGroup, e)
+        {
+            Name = name;
+        }
+
+        public Monogenic(FGroup<T, U> fGroup, U e, string name, string fmt) : this(fGroup, e)
+        {
+            Name = name;
+            Fmt = fmt;
         }
     }
 }

@@ -8,6 +8,12 @@ namespace FineGrain
     {
         protected GElt(FSet<T> fSet, int hash) : base(fSet, hash) { }
 
+        protected GElt(FSet<T> fSet, GElt<T> e) : base(fSet, e.HashCode)
+        {
+            table = new T[fSet.CacheLength];
+            e.CopyTo(table);
+        }
+
         private int order;
         public int Order
         {
@@ -35,20 +41,14 @@ namespace FineGrain
         public override int Compare(U x, U y) => x.CompareTo(y);
     }
 
-    public abstract class FGroup<T, U> : Table<T> where U : GElt<T> where T : struct, IEquatable<T>, IComparable<T>
+    public abstract class FGroup<T, U> : Monoid<T> where U : GElt<T> where T : struct, IEquatable<T>, IComparable<T>
     {
         protected FGroup(int hash) : base(hash) { }
-        protected FGroup(int[] dims) : base(dims) { }
 
+        public abstract U Clone(FSet<T> fSet, U e);
         protected abstract U Create(params T[] ts);
         protected abstract U DefineOp(U a, U b);
-
-        protected void CreateCaches(int size)
-        {
-            cache0 = new T[size];
-            cache1 = new T[size];
-            cache2 = new T[size];
-        }
+        protected abstract U CreateIdentity();
 
         protected void AddElt(U e)
         {
@@ -61,11 +61,11 @@ namespace FineGrain
 
         U InternalOp(U a, U b)
         {
-            if (TableOpContains(a.HashCode, b.HashCode))
-                return GetElement<U>(TableOp(a.HashCode, b.HashCode));
+            if (MonoidContains(a.HashCode, b.HashCode))
+                return GetElement<U>(MonoidOp(a.HashCode, b.HashCode));
 
             var e = DefineOp(a, b);
-            TableOpAdd(a.HashCode, b.HashCode, e.HashCode);
+            MonoidOpAdd(a.HashCode, b.HashCode, e.HashCode);
             if (!FSetContains(e.HashCode))
                 FSetAdd(e);
             else
@@ -98,14 +98,17 @@ namespace FineGrain
         public U CreateElement(params T[] ts)
         {
             var p = Create(ts);
+            if (FSetContains(p.HashCode))
+                return GetElement<U>(p.HashCode);
+
             AddElt(p);
             return p;
         }
 
         public U Identity { get; private set; }
-        public void CreateIdentity(U id)
+        public void SetIdentity()
         {
-            Identity = id;
+            Identity = CreateIdentity();
             AddElt(Identity);
         }
 

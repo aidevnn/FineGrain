@@ -38,7 +38,28 @@ namespace FineGrain
         public GroupOpLR OpLR { get; private set; }
 
         readonly Dictionary<U, ClassModulo<T, U>> classOf = new Dictionary<U, ClassModulo<T, U>>();
-        readonly Dictionary<U, U> representatives = new Dictionary<U, U>();
+        readonly Dictionary<int, int> representatives = new Dictionary<int, int>();
+        string Name { get; }
+        public GroupQuotient(FGroup<T, U> fGroup) : base(fGroup.HashCode)
+        {
+            FGroup = fGroup;
+            G = new GroupSubSet<T, U>(fGroup, FGroup.Elements());
+            H = new GroupSubSet<T, U>(fGroup, new U[] { fGroup.Identity }, "<@>");
+
+            Name = "G/@";
+            Init();
+        }
+
+        public GroupQuotient(FGroup<T, U> fGroup, string name) : base(fGroup.HashCode)
+        {
+            FGroup = fGroup;
+            G = new GroupSubSet<T, U>(fGroup, FGroup.Elements());
+            H = new GroupSubSet<T, U>(fGroup, new U[] { fGroup.Identity });
+
+            Name = name;
+            Init();
+        }
+
         public GroupQuotient(GroupSubSet<T, U> upGroup, GroupSubSet<T, U> subGroup, GroupOpLR opLR) : base(upGroup.FGroup.HashCode)
         {
             FGroup = upGroup.FGroup;
@@ -46,6 +67,26 @@ namespace FineGrain
             G = upGroup;
             H = subGroup;
 
+            Name = $"{G.Name}/{H.Name}";
+            Init();
+        }
+
+        public GroupQuotient(GroupSubSet<T, U> upGroup, GroupSubSet<T, U> subGroup, GroupOpLR opLR, string name) : base(upGroup.FGroup.HashCode)
+        {
+            FGroup = upGroup.FGroup;
+
+            G = upGroup;
+            H = subGroup;
+
+            Name = name;
+            Init();
+        }
+
+        void Init()
+        {
+            Fmt = string.Format("|{{0}}| = {{1}} with |{0}| = {2} and |{1}| = {3}", G.Name, H.Name, G.Count, H.Count);
+            FmtElt = "({0})[{1}]";
+            
             var gIsGr = G.IsGroup();
             var hIsGr = H.IsGroup();
 
@@ -61,11 +102,8 @@ namespace FineGrain
                 }
             }
 
-            var gr = $"|G|={G.Elements.Count} and |H|={H.Elements.Count}";
-            Fmt = "|G/H| = {0}, " + gr;
-            FmtElt = "({1})[{0}]";
             CreateCaches(FGroup.CacheLength);
-            CreateIdentity(FGroup.Identity);
+            SetIdentity();
             CreateClasses();
         }
 
@@ -74,47 +112,61 @@ namespace FineGrain
             var lt = new SortedSet<U>(G.Elements, new EltComparer<T, U>());
             foreach (var e0 in lt)
             {
-                if (classOf.Any(mod => mod.Value.Contains(e0)))
+                if (representatives.ContainsKey(e0.HashCode))
                     continue;
 
+                GroupSubSet<T, U> equivalents;
                 if (OpLR == GroupOpLR.Left)
-                    classOf[e0] = new ClassModulo<T, U>(e0, new GroupOp<T, U>(e0, H));
+                    equivalents = new GroupOp<T, U>(e0, H);
                 else
-                    classOf[e0] = new ClassModulo<T, U>(e0, new GroupOp<T, U>(H, e0));
+                    equivalents = new GroupOp<T, U>(H, e0);
+
+                foreach (var e1 in equivalents.Elements)
+                    representatives[e1.HashCode] = e0.HashCode;
             }
 
-            foreach (var kp in classOf)
+            var rep = representatives.Values.Distinct().ToList();
+            foreach (var h0 in rep)
             {
-                foreach (var e0 in kp.Value.Elements)
-                    representatives[e0] = kp.Key;
-            }
-
-            foreach (var e0 in lt)
-            {
-                foreach (var e1 in lt)
+                var e0 = FGroup.GetElement<U>(h0);
+                foreach (var h1 in rep)
                 {
+                    var e1 = FGroup.GetElement<U>(h1);
                     Op(e0, e1);
                 }
             }
 
-            G_over_H = new GroupSubSet<T, U>(this, Elements());
+            G_over_H = new GroupSubSet<T, U>(this, Elements(), Name);
         }
 
         protected override U DefineOp(U a, U b)
         {
-            var ra = representatives[a];
-            var rb = representatives[b];
+            var ra = representatives[a.HashCode];
+            var rb = representatives[b.HashCode];
 
-            var e = FGroup.Op(ra, rb);
+            var e = FGroup.MonoidOp(ra, rb);
 
             var re = representatives[e];
-            TableOpAdd(ra.HashCode, rb.HashCode, re.HashCode);
-            return re;
+            var p = Clone(this, FGroup.GetElement<U>(re));
+            return p;
         }
 
-        public GroupSubSet<T, U> SubGroup => G_over_H;
+        public void Display() => G_over_H.DisplayElements();
         public void Details() => G_over_H.Details();
 
-        protected override U Create(params T[] ts) => Identity;
+        protected override U Create(params T[] ts) => Clone(this, FGroup.CreateElement(ts));
+
+        public override U Clone(FSet<T> fSet, U e) => FGroup.Clone(fSet, e);
+
+        protected override U CreateIdentity()
+        {
+            foreach (var e in H.Elements)
+                representatives[e.HashCode] = FGroup.Identity.HashCode;
+
+            representatives[FGroup.Identity.HashCode] = FGroup.Identity.HashCode;
+            return FGroup.Clone(this, FGroup.Identity);
+        }
+
+        public static implicit operator GroupSubSet<T, U>(GroupQuotient<T, U> qg) => qg.G_over_H;
     }
 }

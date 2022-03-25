@@ -7,10 +7,6 @@ namespace FineGrain
     public abstract class AObj : IEquatable<AObj>
     {
         public int HashCode { get; }
-        protected AObj(int[] arr)
-        {
-            HashCode = Helpers.GenHash(arr);
-        }
 
         protected AObj(int hash)
         {
@@ -24,15 +20,14 @@ namespace FineGrain
     {
         public readonly Dictionary<int, AObj> elts = new Dictionary<int, AObj>();
 
-        protected FSet(int[] arr) : base(arr) { }
-        protected FSet(int hash) : base(hash) { }
+        protected FSet(int hash) : base(hash) { CreateCaches(1); }
 
         protected T[] cache0, cache1, cache2;
         public int CacheLength => cache0.Length;
         protected void FSetAdd(AObj obj) => elts[obj.HashCode] = obj;
 
-        public string FmtElt { get; protected set; }
-        public string Fmt { get; protected set; }
+        public string FmtElt { get; protected set; } = "({0})[{1}]";
+        public string Fmt { get; protected set; } = "|{0}| = {1}";
 
         public bool FSetContains(int hash) => elts.ContainsKey(hash);
         public V GetElement<V>(int hash) where V : AObj => (V)elts[hash];
@@ -45,36 +40,14 @@ namespace FineGrain
             for (int k = 0; k < cache0.Length; ++k)
                 cache0[k] = cache1[k] = cache2[k] = default;
         }
-    }
 
-    public abstract class Table<T> : FSet<T> where T : struct
-    {
-        readonly Dictionary<(int, int), int> tableOp = new Dictionary<(int, int), int>();
-        private int IdHash;
-
-        protected Table(int[] arr) : base(arr) { }
-        protected Table(int hash) : base(hash) { }
-
-        protected void TableOpAdd(int h0, int h1, int h2)
+        protected void CreateCaches(int size)
         {
-            tableOp[(h0, h1)] = h2;
-
-            if (h0 == h2 && h0 == h1)
-                IdHash = h0;
-
-            if (h2 == IdHash)
-            {
-                tableOp[(h0, -1)] = h1;
-                tableOp[(h1, -1)] = h0;
-            }
+            cache0 = new T[size];
+            cache1 = new T[size];
+            cache2 = new T[size];
         }
 
-        public bool TableOpContains(int h0, int h1) => tableOp.ContainsKey((h0, h1));
-        public bool HasInvert(int h) => tableOp.ContainsKey((h, -1));
-        public int GetInvert(int h) => tableOp[(h, -1)];
-        public int TableOp(int h0, int h1) => tableOp[(h0, h1)];
-
-        public override int GetHashCode() => base.GetHashCode();
     }
 
     public abstract class Elt<T> : AObj, IEquatable<Elt<T>> , IComparable<Elt<T>> where T : struct, IEquatable<T>, IComparable<T>
@@ -130,6 +103,35 @@ namespace FineGrain
         public override bool Equals(T x, T y) => x.HashCode.Equals(y.HashCode);
 
         public override int GetHashCode(T obj) => obj.HashCode;
+    }
+
+    public abstract class Monoid<T> : FSet<T> where T : struct
+    {
+        readonly Dictionary<(int, int), int> tableOp = new Dictionary<(int, int), int>();
+        private int IdHash;
+
+        protected Monoid(int hash) : base(hash) { }
+
+        protected void MonoidOpAdd(int h0, int h1, int h2)
+        {
+            tableOp[(h0, h1)] = h2;
+
+            if (h0 == h2 && h0 == h1)
+                IdHash = h0;
+
+            if (h2 == IdHash)
+            {
+                tableOp[(h0, -1)] = h1;
+                tableOp[(h1, -1)] = h0;
+            }
+        }
+
+        public bool MonoidContains(int h0, int h1) => tableOp.ContainsKey((h0, h1));
+        public bool HasInvert(int h) => tableOp.ContainsKey((h, -1));
+        public int GetInvert(int h) => tableOp[(h, -1)];
+        public int MonoidOp(int h0, int h1) => tableOp[(h0, h1)];
+
+        public override int GetHashCode() => base.GetHashCode();
     }
 
 }

@@ -8,24 +8,27 @@ namespace FineGrain
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!!!");
-            var z256 = new Group256();
-            var m32 = z256.CreateElement(32);
-            var G = new GroupSubSet<byte, Integer256>(z256, z256.Elements(), "|G| = {0}");
-            var H = new Monogenic<byte, Integer256>(z256, m32, "|H| = {0}");
+            var zn = new Group256(90);
+            zn.CreateElement(1);
 
-            G.Details();
-            H.Details();
+            var G = new GroupSubSet<byte, Integer256>(zn, zn.Elements(), "Z");
+            G.DisplayHead();
+            var m15 = zn.CreateElement(15);
+
+            var H = new Monogenic<byte, Integer256>(zn, m15, "15Z");
+            H.DisplayElements();
 
             var Gh = new GroupQuotient<byte, Integer256>(G, H, GroupOpLR.Left);
-            Gh.Details();
+            Gh.Display();
 
-            var m4 = Gh.Elements().ElementAt(4);
-            m4.Display();
-            var H1 = new Monogenic<byte, Integer256>(Gh, m4, "|H| = {0}");
+            var m3 = Gh.Elements().ElementAt(3);
+            var H1 = new Monogenic<byte, Integer256>(Gh, m3, "3Z", "|{0}| = {1} ");
             H1.Details();
-            var Gh1 = new GroupQuotient<byte, Integer256>(Gh.SubGroup, H1, GroupOpLR.Left);
+            var Gh1 = new GroupQuotient<byte, Integer256>(Gh, H1, GroupOpLR.Left);
             Gh1.Details();
+
+            var Dummy = new GroupQuotient<byte, Integer256>(Gh1);
+            Dummy.Details();
         }
     }
 }

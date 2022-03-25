@@ -10,7 +10,7 @@ namespace FineGrain
         {
             int skip = skipFirst ? 1 : 0;
             if (n > 50)
-                return Enumerable.Range(skip + 1, n).Select(a => $"E{a,2:0000}").ToList();
+                return Enumerable.Range(skip + 1, n).Select(a => $"E{a,2:000}").ToList();
 
             return "@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".Skip(skip).Take(n).Select(c => $"{c}").ToList();
         }
@@ -20,6 +20,7 @@ namespace FineGrain
         public List<U> Elements => elements.ToList();
         public bool Contains(U e) => elements.Contains(e);
         public int Count => elements.Count;
+        public string Name { get; protected set; } = "G";
         public string Fmt { get; protected set; }
 
         protected SubFSet(FSet<T> fSet)
@@ -52,7 +53,7 @@ namespace FineGrain
 
         public virtual void DisplayHead()
         {
-            Console.WriteLine(Fmt, Elements.Count);
+            Console.WriteLine(Fmt, Name, Elements.Count);
         }
 
         public virtual void DisplayElements(bool skipFirst = false, bool format = true)
@@ -65,7 +66,7 @@ namespace FineGrain
 
             DisplayHead();
 
-            if (elements.Count > 200)
+            if (elements.Count > 300)
             {
                 Console.WriteLine("TOO BIG");
                 return;
