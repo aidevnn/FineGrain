@@ -45,7 +45,7 @@
     <Compile Include="Integer256.cs" />
     <Compile Include="Permutation.cs" />
     <Compile Include="QuotientGroup.cs" />
-    <Compile Include="Abelian.cs" />
+    <Compile Include="Abelian256.cs" />
     <Compile Include="Normalize.cs" />
   </ItemGroup>
   <ItemGroup>

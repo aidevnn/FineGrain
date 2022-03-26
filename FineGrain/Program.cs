@@ -61,7 +61,7 @@ namespace FineGrain
 
         static void SamplesAbelians()
         {
-            var z3xz4 = new Abelian(3, 4);
+            var z3xz4 = new Abelian256(3, 4);
             var G = z3xz4.Generate("G", (1, 0), (0, 1));
             var H = z3xz4.Generate("H", (0, 2));
             G.DisplayElements();

@@ -6,14 +6,14 @@ namespace FineGrain
 {
     public class Tuple256 : GElt<byte>
     {
-        public Abelian Gr { get; }
-        public Tuple256(Abelian gr) : base(gr, 0)
+        public Abelian256 Gr { get; }
+        public Tuple256(Abelian256 gr) : base(gr, 0)
         {
             table = new byte[gr.CacheLength];
             Gr = gr;
         }
 
-        public Tuple256(Abelian gr, byte[] arr, int hash) : base(gr, hash)
+        public Tuple256(Abelian256 gr, byte[] arr, int hash) : base(gr, hash)
         {
             table = arr.ToArray();
             Gr = gr;
@@ -24,10 +24,10 @@ namespace FineGrain
         protected override string[] DisplayInfos => new string[] { TableStr, OrderStr };
     }
 
-    public class Abelian : FGroup<byte, Tuple256>
+    public class Abelian256 : FGroup<byte, Tuple256>
     {
         public int[] Dim { get; }
-        public Abelian(params int[] dim) : base(dim)
+        public Abelian256(params int[] dim) : base(dim)
         {
             Dim = dim;
             SetIdentity();
