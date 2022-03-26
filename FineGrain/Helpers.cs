@@ -240,5 +240,22 @@ namespace FineGrain
 
             return acc.Select(a => a.ToArray()).ToArray();
         }
+
+        public static byte[][] AllCombinaisons(int n)
+        {
+            var acc = new List<List<byte>>() { new List<byte>() };
+            for (byte i = 0; i < n; ++i)
+            {
+                var tmpAcc = acc.ToList();
+                foreach(var l0 in tmpAcc)
+                {
+                    var l1 = l0.ToList();
+                    l1.Add(i);
+                    acc.Add(l1);
+                }
+            }
+
+            return acc.Select(a => a.ToArray()).ToArray();
+        }
     }
 }

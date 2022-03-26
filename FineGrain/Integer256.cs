@@ -42,5 +42,28 @@ namespace FineGrain
         protected override Integer256 DefineOp(Integer256 a, Integer256 b) => new Integer256(this, (byte)(((int)a.V + (int)b.V) % N));
 
         public void GenerateAll() => CreateElement(1);
+
+        public Integer256 ByValue(byte b) => CreateElement(b);
+
+        public GroupSubSet<byte, Integer256> Generate(params Integer256[] vs)
+        {
+            return new GeneratedSubGroup<byte, Integer256>(this, vs);
+        }
+
+        public GroupSubSet<byte, Integer256> Generate(string name, params Integer256[] vs)
+        {
+            return new GeneratedSubGroup<byte, Integer256>(this, name, vs);
+        }
+
+        public GroupSubSet<byte, Integer256> Generate(params byte[] vs)
+        {
+            return new GeneratedSubGroup<byte, Integer256>(this, vs.Select(ByValue).ToArray());
+        }
+
+        public GroupSubSet<byte, Integer256> Generate(string name, params byte[] vs)
+        {
+            return new GeneratedSubGroup<byte, Integer256>(this, name, vs.Select(ByValue).ToArray());
+        }
+
     }
 }

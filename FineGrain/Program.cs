@@ -9,41 +9,60 @@ namespace FineGrain
     {
         static void SamplesInteger256()
         {
-            var z20 = new Group256(20);
-            z20.GenerateAll();
-            var G = new GroupSubSet<byte, Integer256>(z20, z20.Elements(), name: "Z");
-            var H = new Monogenic<byte, Integer256>(z20, z20.CreateElement(5), name: "5Z");
+            var zn = new Group256(20);
+            var G = zn.Generate("Z", 1);
+            var H = zn.Generate("5Z", 5);
             G.DisplayHead();
             H.DisplayHead();
 
-            var Qg = new GroupQuotient<byte, Integer256>(G, H, GroupOpLR.Left);
+            var Qg = new QuotientGroup<byte, Integer256>(G, H);
             Qg.Details();
-
-            foreach (var e in Qg.ClassOf)
-                e.Value.Display();
+            Qg.DisplayClasses();
         }
 
-        static void SamplesSigma()
+        static void SamplesSigma3()
+        {
+            var sn = new Sigma(3);
+            var H0 = sn.Generate("H0", (1, 2, 3), (1, 2));
+            var H1 = sn.Generate("H1", (1, 2, 3));
+            H0.DisplayElements();
+            H1.DisplayElements();
+
+            var Qg0 = new QuotientGroup<byte, Permutation>(H0, H1);
+            Qg0.Details();
+            Qg0.DisplayClasses();
+        }
+
+        static void SamplesSigma4()
         {
             var sn = new Sigma(4);
-            sn.GenerateAll();
-            var G = new GroupSubSet<byte, Permutation>(sn, sn.Elements(), "S4");
-            G.DisplayHead();
+            var H0 = sn.Generate("H0", (1, 3), (2, 4), Sigma.KCycle(4));
+            var H1 = sn.Generate("H1", (1, 3), (2, 4));
+            H0.DisplayElements();
+            H1.DisplayElements();
 
-            var H = new Monogenic<byte, Permutation>(sn, sn.kCycle(4), "H");
-            H.Details();
+            var Qg0 = new QuotientGroup<byte, Permutation>(H0, H1);
+            Qg0.Details();
+            Qg0.DisplayClasses();
+        }
 
-            var Qg = new GroupQuotient<byte, Permutation>(G, H, GroupOpLR.Left);
-            Qg.Details();
+        static void SamplesSigma6()
+        {
+            var sn = new Sigma(6);
+            var H0 = sn.Generate("H0", (1, 2, 3), (4, 5));
+            var H1 = sn.Generate("H1", (4, 5));
+            H0.DisplayElements();
+            H1.DisplayElements();
 
-            foreach (var e in Qg.ClassOf)
-                e.Value.Display();
+            var Qg0 = new QuotientGroup<byte, Permutation>(H0, H1);
+            Qg0.Details();
+            Qg0.DisplayClasses();
         }
 
         public static void Main(string[] args)
         {
-            //SamplesInteger256();
-            SamplesSigma();
+            SamplesInteger256();
+            //SamplesSigma6();
         }
     }
 }

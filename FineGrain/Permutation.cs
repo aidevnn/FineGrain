@@ -15,8 +15,9 @@ namespace FineGrain
             Sgn = Helpers.ComputeSgn(table);
         }
 
-        public Permutation(FSet<byte> fSet, GElt<byte> e) : base(fSet, e)
+        public Permutation(FSet<byte> fSet, Permutation e) : base(fSet, e)
         {
+            Sn = e.Sn;
             Sgn = Helpers.ComputeSgn(table);
         }
 
@@ -98,14 +99,47 @@ namespace FineGrain
                 CreateElement(p);
         }
 
+        public Permutation Cycles(ManyTuples<byte> many) => Cycles(many.Tuples);
+
         public Permutation kCycle(int count) => Cycle(KCycle(count));
         public Permutation kCycleR(int count) => Cycle(KCycleR(count));
         public Permutation kCycle(int start, int count) => Cycle(KCycle(start, count));
         public Permutation kCycleR(int start, int count) => Cycle(KCycleR(start, count));
 
+        public GroupSubSet<byte, Permutation> Generate(params Permutation[] perms)
+        {
+            return new GeneratedSubGroup<byte, Permutation>(this, perms);
+        }
+
+        public GroupSubSet<byte, Permutation> Generate(string name, params Permutation[] perms)
+        {
+            return new GeneratedSubGroup<byte, Permutation>(this, name, perms);
+        }
+
+        public GroupSubSet<byte, Permutation> Generate(params SingleTuple<byte>[] cycles)
+        {
+            return new GeneratedSubGroup<byte, Permutation>(this, cycles.Select(Cycle).ToArray());
+        }
+
+        public GroupSubSet<byte, Permutation> Generate(string name, params SingleTuple<byte>[] cycles)
+        {
+            return new GeneratedSubGroup<byte, Permutation>(this, name, cycles.Select(Cycle).ToArray());
+        }
+
+        public GroupSubSet<byte, Permutation> Generate(params ManyTuples<byte>[] manies)
+        {
+            return new GeneratedSubGroup<byte, Permutation>(this, manies.Select(Cycles).ToArray());
+        }
+
+        public GroupSubSet<byte, Permutation> Generate(string name, params ManyTuples<byte>[] manies)
+        {
+            return new GeneratedSubGroup<byte, Permutation>(this, name, manies.Select(Cycles).ToArray());
+        }
+
         public static SingleTuple<byte> KCycle(int start, int count) => new SingleTuple<byte>(Enumerable.Range(start, count).Select(a => (byte)a).ToArray());
         public static SingleTuple<byte> KCycleR(int start, int count) => new SingleTuple<byte>(Enumerable.Range(start, count).Reverse().Select(a => (byte)a).ToArray());
         public static SingleTuple<byte> KCycle(int count) => KCycle(1, count);
         public static SingleTuple<byte> KCycleR(int count) => KCycleR(1, count);
+
     }
 }

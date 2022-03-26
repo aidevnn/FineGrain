@@ -4,8 +4,12 @@ using System.Linq;
 
 namespace FineGrain
 {
+    public enum SortBy { Order, Value }
+
     public abstract class SubFSet<T, U> where U : Elt<T>, IComparable<Elt<T>> where T : struct, IComparable<T>, IEquatable<T>
     {
+        public SortBy SortBy { get; protected set; } = SortBy.Value;
+        public virtual Comparer<U> GetComparer => new EltComparer<T, U>();
         protected static List<string> GenLetters(int n, bool skipFirst = false)
         {
             int skip = skipFirst ? 1 : 0;
@@ -51,6 +55,8 @@ namespace FineGrain
             }
         }
 
+        public void SetComparer(SortBy sortBy) => SortBy = sortBy;
+
         public virtual void DisplayHead()
         {
             Console.WriteLine(Fmt, Name, Elements.Count);
@@ -71,6 +77,9 @@ namespace FineGrain
                 Console.WriteLine("TOO BIG");
                 return;
             }
+
+            var elts = Elements;
+            elements = new SortedSet<U>(elts, GetComparer);
 
             var word = GenLetters(elements.Count, skipFirst);
             for (int k = 0; k < elements.Count; ++k)

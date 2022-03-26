@@ -3,18 +3,15 @@ Finite group study, abelians or not, quotient group, direct and semidirect produ
 
 Starting to study Quotient Group in Z.
 ```
-var z20 = new Group256(20);
-z20.GenerateAll();
-var G = new GroupSubSet<byte, Integer256>(z20, z20.Elements(), name: "Z");
-var H = new Monogenic<byte, Integer256>(z20, z20.CreateElement(5), name: "5Z");
+var zn = new Group256(20);
+var G = zn.Generate("Z", 1);
+var H = zn.Generate("5Z", 5);
 G.DisplayHead();
 H.DisplayHead();
 
-var Qg = new GroupQuotient<byte, Integer256>(G, H, GroupOpLR.Left);
+var Qg = new QuotientGroup<byte, Integer256>(G, H);
 Qg.Details();
-
-foreach (var e in Qg.ClassOf)
-    e.Value.Display();
+Qg.DisplayClasses();
 ```
 
 Will output
@@ -28,17 +25,17 @@ IsCommutative: True
 IsGroup      : True
 IsCommutative: True
 
-|Z/5Z| = 5 with |Z| = 20 and |5Z| = 4
+|Z/5Z| = 5 with |Z| = 20 and |5Z| = 4, OpBoth
 IsGroup      : True
 IsCommutative: True
 
 @ = (  0)[  1]
-a = (  1)[  5]
-b = (  2)[  5]
-c = (  3)[  5]
+a = (  1)[ 20]
+b = (  2)[ 10]
+c = (  3)[ 20]
 d = (  4)[  5]
 
-|Z/5Z| = 5 with |Z| = 20 and |5Z| = 4
+|Z/5Z| = 5 with |Z| = 20 and |5Z| = 4, OpBoth
  *|@ a b c d
 --|----------
  @|@ a b c d
@@ -78,111 +75,120 @@ Class of : (  4)[  5]
     (  9)[ 20]
     ( 14)[ 10]
     ( 19)[ 20]
-```
-
-### More complex, S4, the group of permutations
 
 ```
-var sn = new Sigma(4);
-sn.GenerateAll();
-var G = new GroupSubSet<byte, Permutation>(sn, sn.Elements(), "S4");
-G.DisplayHead();
 
-var H = new Monogenic<byte, Permutation>(sn, sn.kCycle(4), "H");
-H.Details();
+### Simple S3, the group of permutations
 
-var Qg = new GroupQuotient<byte, Permutation>(G, H, GroupOpLR.Left);
-Qg.Details();
+```
+var sn = new Sigma(3);
+var H0 = sn.Generate("H0", (1, 2, 3), (1, 2));
+var H1 = sn.Generate("H1", (1, 2, 3));
+H0.DisplayElements();
+H1.DisplayElements();
 
-foreach (var e in Qg.ClassOf)
-    e.Value.Display();
+var Qg0 = new QuotientGroup<byte, Permutation>(H0, H1);
+Qg0.Details();
+Qg0.DisplayClasses();
 ```
 
 Will output
 
 ```
-|S4| = 24
+|H0| = 6
 IsGroup      : True
 IsCommutative:False
 
-|H| = 4
+@ = ( 1  2  3)[ 1+]
+a = ( 1  3  2)[ 2-]
+b = ( 2  1  3)[ 2-]
+c = ( 3  2  1)[ 2-]
+d = ( 2  3  1)[ 3+]
+e = ( 3  1  2)[ 3+]
+
+|H1| = 3
 IsGroup      : True
 IsCommutative: True
 
-@ = ( 1  2  3  4)[ 1+]
-a = ( 3  4  1  2)[ 2+]
-b = ( 2  3  4  1)[ 4-]
-c = ( 4  1  2  3)[ 4-]
+@ = ( 1  2  3)[ 1+]
+a = ( 2  3  1)[ 3+]
+b = ( 3  1  2)[ 3+]
 
-|H| = 4
- *|@ a b c
---|--------
- @|@ a b c
- a|a @ c b
- b|b c a @
- c|c b @ a
-
-
-|S4/H| = 6 with |S4| = 24 and |H| = 4
+|H0/H1| = 2 with |H0| = 6 and |H1| = 3, OpBoth
 IsGroup      : True
-IsCommutative:False
+IsCommutative: True
 
-@ = ( 1  2  3  4)[ 1+]
-a = ( 1  2  4  3)[ 2-]
-b = ( 1  3  2  4)[ 2-]
-c = ( 1  4  3  2)[ 2-]
-d = ( 1  3  4  2)[ 3+]
-e = ( 1  4  2  3)[ 3+]
+@ = ( 1  2  3)[ 1+]
+a = ( 1  3  2)[ 2-]
 
-|S4/H| = 6 with |S4| = 24 and |H| = 4
- *|@ a b c d e
---|------------
- @|@ a b c d e
- a|a @ d e b c
- b|b e @ d c a
- c|c d e @ a b
- d|d c a b e @
- e|e b c a @ d
+|H0/H1| = 2 with |H0| = 6 and |H1| = 3, OpBoth
+ *|@ a
+--|----
+ @|@ a
+ a|a @
 
 
-Class of : ( 1  2  3  4)[ 1+]
+Class of : ( 1  2  3)[ 1+]
     Represent
-    ( 1  2  3  4)[ 1+]
-    ( 2  3  4  1)[ 4-]
-    ( 3  4  1  2)[ 2+]
-    ( 4  1  2  3)[ 4-]
-Class of : ( 1  2  4  3)[ 2-]
+    ( 1  2  3)[ 1+]
+    ( 2  3  1)[ 3+]
+    ( 3  1  2)[ 3+]
+Class of : ( 1  3  2)[ 2-]
     Represent
-    ( 1  2  4  3)[ 2-]
-    ( 2  4  3  1)[ 3+]
-    ( 3  1  2  4)[ 3+]
-    ( 4  3  1  2)[ 4-]
-Class of : ( 1  3  2  4)[ 2-]
-    Represent
-    ( 1  3  2  4)[ 2-]
-    ( 2  4  1  3)[ 4-]
-    ( 3  2  4  1)[ 3+]
-    ( 4  1  3  2)[ 3+]
-Class of : ( 1  3  4  2)[ 3+]
-    Represent
-    ( 1  3  4  2)[ 3+]
-    ( 2  1  3  4)[ 2-]
-    ( 3  4  2  1)[ 4-]
-    ( 4  2  1  3)[ 3+]
-Class of : ( 1  4  2  3)[ 3+]
-    Represent
-    ( 1  4  2  3)[ 3+]
-    ( 2  3  1  4)[ 3+]
-    ( 3  1  4  2)[ 4-]
-    ( 4  2  3  1)[ 2-]
-Class of : ( 1  4  3  2)[ 2-]
-    Represent
-    ( 1  4  3  2)[ 2-]
-    ( 2  1  4  3)[ 2+]
-    ( 3  2  1  4)[ 2-]
-    ( 4  3  2  1)[ 2+]
+    ( 1  3  2)[ 2-]
+    ( 2  1  3)[ 2-]
+    ( 3  2  1)[ 2-]
 
 
 ```
 
-### Normal Group coming soon
+Then with Sigma6
+```
+|H0| = 6
+IsGroup      : True
+IsCommutative: True
+
+@ = ( 1  2  3  4  5  6)[ 1+]
+a = ( 1  2  3  5  4  6)[ 2-]
+b = ( 2  3  1  4  5  6)[ 3+]
+c = ( 3  1  2  4  5  6)[ 3+]
+d = ( 2  3  1  5  4  6)[ 6-]
+e = ( 3  1  2  5  4  6)[ 6-]
+
+|H1| = 2
+IsGroup      : True
+IsCommutative: True
+
+@ = ( 1  2  3  4  5  6)[ 1+]
+a = ( 1  2  3  5  4  6)[ 2-]
+
+|H0/H1| = 3 with |H0| = 6 and |H1| = 2, OpBoth
+IsGroup      : True
+IsCommutative: True
+
+@ = ( 1  2  3  4  5  6)[ 1+]
+a = ( 2  3  1  4  5  6)[ 3+]
+b = ( 3  1  2  4  5  6)[ 3+]
+
+|H0/H1| = 3 with |H0| = 6 and |H1| = 2, OpBoth
+ *|@ a b
+--|------
+ @|@ a b
+ a|a b @
+ b|b @ a
+
+
+Class of : ( 1  2  3  4  5  6)[ 1+]
+    Represent
+    ( 1  2  3  4  5  6)[ 1+]
+    ( 1  2  3  5  4  6)[ 2-]
+Class of : ( 2  3  1  4  5  6)[ 3+]
+    Represent
+    ( 2  3  1  4  5  6)[ 3+]
+    ( 2  3  1  5  4  6)[ 6-]
+Class of : ( 3  1  2  4  5  6)[ 3+]
+    Represent
+    ( 3  1  2  4  5  6)[ 3+]
+    ( 3  1  2  5  4  6)[ 6-]
+
+```

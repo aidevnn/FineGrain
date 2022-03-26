@@ -105,6 +105,13 @@ namespace FineGrain
         public override int GetHashCode(T obj) => obj.HashCode;
     }
 
+    public class ComparerHash : EqualityComparer<HashSet<int>>
+    {
+        public override bool Equals(HashSet<int> x, HashSet<int> y) => x.SetEquals(y);
+
+        public override int GetHashCode(HashSet<int> obj) => 1;
+    }
+
     public abstract class Monoid<T> : FSet<T> where T : struct
     {
         readonly Dictionary<(int, int), int> tableOp = new Dictionary<(int, int), int>();

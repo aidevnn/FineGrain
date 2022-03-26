@@ -42,9 +42,9 @@
     <Compile Include="SubSet.cs" />
     <Compile Include="FGroup.cs" />
     <Compile Include="SubGroup.cs" />
-    <Compile Include="QuotientGroup.cs" />
     <Compile Include="Integer256.cs" />
     <Compile Include="Permutation.cs" />
+    <Compile Include="QuotientGroup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
