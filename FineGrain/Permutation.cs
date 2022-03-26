@@ -15,12 +15,6 @@ namespace FineGrain
             Sgn = Helpers.ComputeSgn(table);
         }
 
-        public Permutation(FSet<byte> fSet, Permutation e) : base(fSet, e)
-        {
-            Sn = e.Sn;
-            Sgn = Helpers.ComputeSgn(table);
-        }
-
         string SgnStr => Sgn == 1 ? "+" : "-";
         string OrderStr => $"{Order,2}{SgnStr}";
         string TableStr => string.Join(" ", table.Skip(1).Select(e => $"{e,2}"));
@@ -50,8 +44,6 @@ namespace FineGrain
             var hash = Helpers.GenHash(N + 1, arr);
             return new Permutation(this, arr, hash);
         }
-
-        public override Permutation Clone(FSet<byte> fSet, Permutation e) => new Permutation(fSet, e);
 
         protected override Permutation DefineOp(Permutation a, Permutation b)
         {
@@ -134,6 +126,36 @@ namespace FineGrain
         public GroupSubSet<byte, Permutation> Generate(string name, params ManyTuples<byte>[] manies)
         {
             return new GeneratedSubGroup<byte, Permutation>(this, name, manies.Select(Cycles).ToArray());
+        }
+
+        public GroupSubSet<byte, Permutation> SubSet(params Permutation[] perms)
+        {
+            return new GroupSubSet<byte, Permutation>(this, perms);
+        }
+
+        public GroupSubSet<byte, Permutation> SubSet(string name, params Permutation[] perms)
+        {
+            return new GroupSubSet<byte, Permutation>(this, name, perms);
+        }
+
+        public GroupSubSet<byte, Permutation> SubSet(params SingleTuple<byte>[] cycles)
+        {
+            return new GroupSubSet<byte, Permutation>(this, cycles.Select(Cycle).ToArray());
+        }
+
+        public GroupSubSet<byte, Permutation> SubSet(string name, params SingleTuple<byte>[] cycles)
+        {
+            return new GroupSubSet<byte, Permutation>(this, name, cycles.Select(Cycle).ToArray());
+        }
+
+        public GroupSubSet<byte, Permutation> SubSet(params ManyTuples<byte>[] manies)
+        {
+            return new GroupSubSet<byte, Permutation>(this, manies.Select(Cycles).ToArray());
+        }
+
+        public GroupSubSet<byte, Permutation> SubSet(string name, params ManyTuples<byte>[] manies)
+        {
+            return new GroupSubSet<byte, Permutation>(this, name, manies.Select(Cycles).ToArray());
         }
 
         public static SingleTuple<byte> KCycle(int start, int count) => new SingleTuple<byte>(Enumerable.Range(start, count).Select(a => (byte)a).ToArray());

@@ -26,7 +26,7 @@ namespace FineGrain
             Fmt = fmt;
         }
 
-        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us) : base(fGroup)
+        public GroupSubSet(FGroup<T, U> fGroup, params U[] us) : base(fGroup)
         {
             if (us.Any(e => !FSet.HashCode.Equals(e.FSet.HashCode)))
                 return;
@@ -38,12 +38,12 @@ namespace FineGrain
             SortBy = SortBy.Order;
         }
 
-        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us, string name) : this(fGroup, us)
+        public GroupSubSet(FGroup<T, U> fGroup, string name, params U[] us) : this(fGroup, us)
         {
             Name = name;
         }
 
-        public GroupSubSet(FGroup<T, U> fGroup, IEnumerable<U> us, string name, string fmt) : this(fGroup, us, name)
+        public GroupSubSet(FGroup<T, U> fGroup, string name, string fmt, params U[] us) : this(fGroup, name, us)
         {
             Fmt = fmt;
         }

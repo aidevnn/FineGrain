@@ -45,6 +45,8 @@
     <Compile Include="Integer256.cs" />
     <Compile Include="Permutation.cs" />
     <Compile Include="QuotientGroup.cs" />
+    <Compile Include="Abelian.cs" />
+    <Compile Include="Normalize.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">

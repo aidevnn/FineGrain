@@ -23,7 +23,7 @@ namespace FineGrain
             var hash = 0;
             for (int k = 0; k < dims.Length; ++k)
             {
-                hash += pow * dims[k];
+                hash += pow * (dims[k] - 1);
                 pow *= dims[k];
             }
 
@@ -175,7 +175,7 @@ namespace FineGrain
             return next || prev;
         }
 
-        public static void AddMod(byte[] n, byte[] m0, byte[] m1, byte[] m2)
+        public static void AddMod(int[] n, byte[] m0, byte[] m1, byte[] m2)
         {
             for (int k = 0; k < m0.Length; ++k)
                 m2[k] = (byte)((m0[k] + m1[k]) % n[k]);

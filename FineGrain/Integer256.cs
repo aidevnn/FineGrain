@@ -7,7 +7,6 @@ namespace FineGrain
     public class Integer256 : GElt<byte>
     {
         public Group256 Group { get; }
-        public Integer256(FSet<byte> fSet, Integer256 integer) : base(fSet, integer) { }
 
         public Integer256(Group256 group, byte v) : base(group, (v % group.N))
         {
@@ -19,9 +18,7 @@ namespace FineGrain
 
         public byte V { get; }
 
-        string OrderStr => $"{Order,3}";
-        string TableStr => string.Join(" ", table.Select(e => $"{e,3}"));
-        protected override string[] DisplayInfos => new string[] { TableStr, OrderStr };
+        protected override string[] DisplayInfos => new string[] { $"{V, 3}", $"{Order,3}" };
     }
 
     public class Group256 : FGroup<byte, Integer256>
@@ -37,9 +34,7 @@ namespace FineGrain
 
         protected override Integer256 Create(params byte[] ts) => new Integer256(this, ts[0]);
 
-        public override Integer256 Clone(FSet<byte> fSet, Integer256 e) => new Integer256(fSet, e);
-
-        protected override Integer256 DefineOp(Integer256 a, Integer256 b) => new Integer256(this, (byte)(((int)a.V + (int)b.V) % N));
+        protected override Integer256 DefineOp(Integer256 a, Integer256 b) => new Integer256(this, (byte)((a.V + b.V) % N));
 
         public void GenerateAll() => CreateElement(1);
 

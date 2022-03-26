@@ -8,12 +8,6 @@ namespace FineGrain
     {
         protected GElt(FSet<T> fSet, int hash) : base(fSet, hash) { table = new T[fSet.CacheLength]; }
 
-        protected GElt(FSet<T> fSet, GElt<T> e) : base(fSet, e.HashCode)
-        {
-            table = new T[fSet.CacheLength];
-            e.CopyTo(table);
-        }
-
         private int order;
         public int Order
         {
@@ -44,8 +38,8 @@ namespace FineGrain
     public abstract class FGroup<T, U> : Monoid<T> where U : GElt<T> where T : struct, IEquatable<T>, IComparable<T>
     {
         protected FGroup(int hash) : base(hash) { }
+        protected FGroup(int[] dim) : base(dim) { }
 
-        public abstract U Clone(FSet<T> fSet, U e);
         protected abstract U Create(params T[] ts);
         protected abstract U DefineOp(U a, U b);
         protected abstract U CreateIdentity();

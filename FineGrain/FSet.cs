@@ -13,6 +13,11 @@ namespace FineGrain
             HashCode = hash;
         }
 
+        protected AObj(int[] arr)
+        {
+            HashCode = Helpers.GenHash(arr);
+        }
+
         public bool Equals(AObj other) => HashCode == other.HashCode;
     }
 
@@ -21,6 +26,7 @@ namespace FineGrain
         public readonly Dictionary<int, AObj> elts = new Dictionary<int, AObj>();
 
         protected FSet(int hash) : base(hash) { CreateCaches(1); }
+        protected FSet(int[] dim) : base(dim) { CreateCaches(dim.Length); }
 
         protected T[] cache0, cache1, cache2;
         public int CacheLength => cache0.Length;
@@ -118,6 +124,7 @@ namespace FineGrain
         private int IdHash;
 
         protected Monoid(int hash) : base(hash) { }
+        protected Monoid(int[] arr) : base(arr) { }
 
         protected void MonoidOpAdd(int h0, int h1, int h2)
         {

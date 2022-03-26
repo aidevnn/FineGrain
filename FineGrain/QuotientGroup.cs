@@ -161,7 +161,7 @@ namespace FineGrain
             {
                 var lu = new SortedSet<U>(lh.Select(FGroup.GetElement<U>), GetComparer);
                 var r = lu.First();
-                var subG = new GroupSubSet<T, U>(FGroup, lu);
+                var subG = new GroupSubSet<T, U>(FGroup, lu.ToArray());
                 classOf[r] = new ClassModulo<T, U>(r, subG);
                 elements.Add(r);
                 foreach (var e in lu)
