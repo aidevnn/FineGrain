@@ -46,9 +46,9 @@ namespace FineGrain
             Qg0.DisplayClasses();
         }
 
-        static void SamplesSigma6()
+        static void SamplesSigma5()
         {
-            var sn = new Sigma(6);
+            var sn = new Sigma(5);
             var H0 = sn.Generate("H0", (1, 2, 3), (4, 5));
             var H1 = sn.Generate("H1", (4, 5));
             H0.DisplayElements();
@@ -61,8 +61,7 @@ namespace FineGrain
 
         public static void Main(string[] args)
         {
-            SamplesInteger256();
-            //SamplesSigma6();
+            SamplesSigma5(); 
         }
     }
 }

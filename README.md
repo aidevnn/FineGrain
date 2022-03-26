@@ -139,36 +139,48 @@ Class of : ( 1  3  2)[ 2-]
     ( 2  1  3)[ 2-]
     ( 3  2  1)[ 2-]
 
+```
+
+### Then S5
+```
+var H0 = sn.Generate("H0", (1, 2, 3), (4, 5));
+var H1 = sn.Generate("H1", (4, 5));
+H0.DisplayElements();
+H1.DisplayElements();
+
+var Qg0 = new QuotientGroup<byte, Permutation>(H0, H1);
+Qg0.Details();
+Qg0.DisplayClasses();
 
 ```
 
-Then with Sigma6
+will output
 ```
 |H0| = 6
 IsGroup      : True
 IsCommutative: True
 
-@ = ( 1  2  3  4  5  6)[ 1+]
-a = ( 1  2  3  5  4  6)[ 2-]
-b = ( 2  3  1  4  5  6)[ 3+]
-c = ( 3  1  2  4  5  6)[ 3+]
-d = ( 2  3  1  5  4  6)[ 6-]
-e = ( 3  1  2  5  4  6)[ 6-]
+@ = ( 1  2  3  4  5)[ 1+]
+a = ( 1  2  3  5  4)[ 2-]
+b = ( 2  3  1  4  5)[ 3+]
+c = ( 3  1  2  4  5)[ 3+]
+d = ( 2  3  1  5  4)[ 6-]
+e = ( 3  1  2  5  4)[ 6-]
 
 |H1| = 2
 IsGroup      : True
 IsCommutative: True
 
-@ = ( 1  2  3  4  5  6)[ 1+]
-a = ( 1  2  3  5  4  6)[ 2-]
+@ = ( 1  2  3  4  5)[ 1+]
+a = ( 1  2  3  5  4)[ 2-]
 
 |H0/H1| = 3 with |H0| = 6 and |H1| = 2, OpBoth
 IsGroup      : True
 IsCommutative: True
 
-@ = ( 1  2  3  4  5  6)[ 1+]
-a = ( 2  3  1  4  5  6)[ 3+]
-b = ( 3  1  2  4  5  6)[ 3+]
+@ = ( 1  2  3  4  5)[ 1+]
+a = ( 2  3  1  4  5)[ 3+]
+b = ( 3  1  2  4  5)[ 3+]
 
 |H0/H1| = 3 with |H0| = 6 and |H1| = 2, OpBoth
  *|@ a b
@@ -178,17 +190,17 @@ b = ( 3  1  2  4  5  6)[ 3+]
  b|b @ a
 
 
-Class of : ( 1  2  3  4  5  6)[ 1+]
+Class of : ( 1  2  3  4  5)[ 1+]
     Represent
-    ( 1  2  3  4  5  6)[ 1+]
-    ( 1  2  3  5  4  6)[ 2-]
-Class of : ( 2  3  1  4  5  6)[ 3+]
+    ( 1  2  3  4  5)[ 1+]
+    ( 1  2  3  5  4)[ 2-]
+Class of : ( 2  3  1  4  5)[ 3+]
     Represent
-    ( 2  3  1  4  5  6)[ 3+]
-    ( 2  3  1  5  4  6)[ 6-]
-Class of : ( 3  1  2  4  5  6)[ 3+]
+    ( 2  3  1  4  5)[ 3+]
+    ( 2  3  1  5  4)[ 6-]
+Class of : ( 3  1  2  4  5)[ 3+]
     Represent
-    ( 3  1  2  4  5  6)[ 3+]
-    ( 3  1  2  5  4  6)[ 6-]
+    ( 3  1  2  4  5)[ 3+]
+    ( 3  1  2  5  4)[ 6-]
 
 ```
